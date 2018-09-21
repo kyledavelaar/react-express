@@ -1,0 +1,216 @@
+////////////////////////////////////////
+// VARIABLES
+////////////////////////////////////////
+#app[data-theme="light"] {
+  --white: #FFFFFF;
+  --graphite: #555555;
+}
+
+#app[data-theme="dark"] {
+  --white: #555555;
+  --graphite: #FFFFFF;
+}
+
+
+$blue: #0075AC;
+$lightblue: #66ACCD;
+$orange: #F88800;
+$graphite: var(--graphite) !default;
+$white: var(--white) !default;
+$red: #ce1010;
+$green: #5cb85c;
+$lightgrey: #f5f6f7;
+$border1: 1px solid lightgrey;
+
+
+////////////////////////////////////////
+// BUTTONS
+////////////////////////////////////////
+@mixin hover_btn($bg: $blue) {
+  background: $bg !important;
+  cursor: pointer;
+  @extend %shadow;
+}
+
+%btn {
+  padding: 5px 15px;
+  border-radius: 4px;
+}
+
+@mixin button($size: 16px) {
+  @extend %btn;
+  font-size: $size;
+  border: $border1;
+  color: $white;
+  background: $lightblue;
+  
+  &:hover {
+    @include hover_btn();
+  }
+}
+
+@mixin button-alert($size: 16px) {
+  @extend %btn;
+  font-size: $size;
+  color: $white;
+  background: $red;
+  
+  &:hover {
+    @include hover_btn(darken($red, 5%));
+  }
+}
+
+@mixin button-disabled($size: 16px) {
+  @extend %btn;
+  font-size: $size;
+  border: $border1;
+  color: $white;
+  background: lightgrey;
+  cursor: default;
+}
+
+
+////////////////////////////////////////
+// TEXT
+////////////////////////////////////////
+
+%text {
+  color: $graphite;
+}
+
+%header1 {
+  @extend %text;
+  @extend %ellipsis;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 700;
+}
+
+%header2 {
+  @extend %text;  
+  @extend %ellipsis;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+%header3 {
+  @extend %text;
+  @extend %ellipsis;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+%header4 {
+  @extend %text;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+%paragraph {
+  @extend %text;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+%ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+%hover {
+  color: #66ACCD !important;
+  cursor: pointer;
+}
+
+h1 {
+  @extend %header1;
+}
+
+h2 {
+  @extend %header2;
+}
+
+h3 {
+  @extend %header3;
+}
+
+h4 {
+  @extend %header4;
+}
+
+p {
+  @extend %paragraph;
+}
+
+////////////////////////////////////////
+// MODALS
+////////////////////////////////////////
+
+@mixin modal($height, $width) {
+  z-index: 3;
+  min-height: $height;
+  width: $width;
+  background: $white;
+  @extend %shadow;
+  border: $border1;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+@mixin modal_bg($bg: transparent) {
+  z-index: 2;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: $bg;
+}
+
+
+////////////////////////////////////////
+// OTHER
+////////////////////////////////////////
+
+@mixin spinner($left, $top, $size) {
+  position: absolute;
+  left: $left;
+  top: $top;
+  transform: translate(-50%, -50%);
+  font-size: $size;
+  color: $blue;
+}
+
+%shadow {
+  box-shadow: 2px 2px 8px rgba(218, 214, 214, 0.8), -2px -2px 12px rgba(218, 214, 214, 0.8);
+}
+
+@mixin tooltip($width: 250px) {
+  visibility: hidden;
+  width: $width;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 175%;
+  left: 50%;
+  margin-left: -($width)/2;
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+  }
+}

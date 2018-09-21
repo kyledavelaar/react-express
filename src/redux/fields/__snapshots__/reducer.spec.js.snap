@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`updates a field 1`] = `
+Object {
+  "error": false,
+  "fetching": false,
+  "fields": Object {
+    "first_name": Object {
+      "custom": false,
+      "name": "First Name",
+      "type": "string",
+      "used": true,
+    },
+  },
+}
+`;
