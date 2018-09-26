@@ -15,6 +15,19 @@ class Home extends React.PureComponent {
     
   }
 
+  componentDidMount() {
+    // const headers = {
+    //   withCredentials: true,
+    // }
+    const headers = {}
+    // using proxy in package.json so don't need
+    const url = 'user';
+    fetch(url, {headers})
+      .then((res) => res.text())
+      .then(text => console.log('text', text))
+      .catch((err) => {console.log('USER', err)})
+  }
+
 
 
 }
