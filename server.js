@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -35,7 +37,7 @@ app.get('/', (req, res) => {
 
 
 //////////////////////////////////////////////////////////////////////
-// GLOBAL MIDDLEWARE (CORS)
+// GLOBAL MIDDLEWARE (CORS, PARSERS)
 //////////////////////////////////////////////////////////////////////
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -54,6 +56,29 @@ app.use(function (req, res, next) {
 
 
 //////////////////////////////////////////////////////////////////////
+// SOCKETS
+//////////////////////////////////////////////////////////////////////
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('user', (message) => {
+    console.log('SOCKET MESSAGE:', message);
+
+    io.sockets.emit('user', message);
+    // socket.broadcast.emit('for all')
+  })
+
+
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  })
+})
+
+
+
+
+//////////////////////////////////////////////////////////////////////
 // ROUTES
 //////////////////////////////////////////////////////////////////////
 app.use('/user', user);
@@ -67,6 +92,6 @@ app.use('/user', user);
 //////////////////////////////////////////////////////////////////////
 const port = 8000;
 
-app.listen(process.env.PORT || port, () => {
+http.listen(process.env.PORT || port, () => {
   console.log('Listening on ', port);
 })
