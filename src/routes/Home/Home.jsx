@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import s from './Home.scss';
 
@@ -16,16 +17,33 @@ class Home extends React.PureComponent {
   }
 
   componentDidMount() {
-    // const headers = {
-    //   withCredentials: true,
-    // }
-    const headers = {}
-    // using proxy in package.json so don't need
+    const headers = {
+      withCredentials: true,
+    }
+    // const headers = {}
+
+    // using proxy in package.json so don't need http://localhost:8000
     const url = 'user';
-    fetch(url, {headers})
-      .then((res) => res.text())
-      .then(text => console.log('text', text))
-      .catch((err) => {console.log('USER', err)})
+    const body = {username: 'kyle', password: 'pass1234'};
+
+    // fetch(url, {headers})
+    //   .then((res) => res.text())
+    //   .then(text => console.log('text', text))
+    //   .catch((err) => {console.log('USER', err)})
+
+    axios.post(url, body, headers)
+      .then(res => {
+        // console.log('USER POST RES', res)
+        if (res.data) {
+          console.log('ALLOWED')
+        } else {
+          console.log('INTRUDER')
+        }
+      })
+      .catch(err => {
+        console.log('USER POST ERR', err)
+      })
+
   }
 
 
