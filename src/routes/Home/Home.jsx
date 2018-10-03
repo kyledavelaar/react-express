@@ -1,29 +1,90 @@
+// @flow
+
 import * as React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Socket from 'socket.io-client';
 
+import Input from '../../components/Input/Input';
+
 import s from './Home.scss';
 
-class Home extends React.PureComponent {
+type Props = {
+
+}
+
+type State = {
+  room: string,
+  message: string,
+  numberOfUsers: number,
+}
+
+const serverIP = 'http://localhost:8000';
+const socket = Socket(serverIP);
+
+
+export class Home extends React.PureComponent<Props, State> {
+  state = {
+    room: '',
+    message: '',
+    numberOfUsers: 0, 
+  }
 
   render() {
-
+    const { room, message, numberOfUsers } = this.state;
     return (
-      <div>
+      <div id={s.wrapper}>
         <h1>Home Page</h1>
+        <div>
+          <Input 
+            label="room"
+            type="text"
+            value={room}
+            name="room"
+            placeholder="enter a room"
+            checked={false}
+            onChange={e => this.onInputChange(e)}
+          />
+          <Input 
+            label="message"
+            type="text"
+            value={message}
+            name="message"
+            placeholder="enter a message"
+            checked={false}
+            onChange={e => this.onInputChange(e)}
+          />
+        </div>
+        <div>
+          <h3>Number Of Users: { numberOfUsers }</h3>
+          <h3>Room: { room }</h3>
+          <h3>Message: { message }</h3>
+        </div>
       </div>
     )
     
   }
 
   componentDidMount() {
-    const serverIP = 'http://localhost:8000';
-    const socket = Socket(serverIP)
-    socket.emit('user', 'my name is Kyle');
+    let { numberOfUsers } = this.state;
+    socket.emit('user', 'user logged on');
 
     socket.on('user', (res) => {
-      console.log('message from user:', res)
+      this.setState({
+        numberOfUsers: numberOfUsers += 1,
+      })
+    })
+
+    socket.on('message', message => {
+      this.setState({
+        message,
+      })
+    })
+
+    socket.on('room', room => {
+      this.setState({
+        room,
+      })
     })
 
     // const headers = {
@@ -55,8 +116,43 @@ class Home extends React.PureComponent {
 
 
 
+  ///////////////////////////////////////////////////////////////////////
+  //  RENDER METHODS
+  ///////////////////////////////////////////////////////////////////////
+  
+  
+  ///////////////////////////////////////////////////////////////////////
+  //  UTIL METHODS
+  ///////////////////////////////////////////////////////////////////////
+  
+  
+  ///////////////////////////////////////////////////////////////////////
+  //  EVENT HANDLERS
+  ///////////////////////////////////////////////////////////////////////
+
+  onInputChange(e: SyntheticEvent<any>) {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+    // this.setState({
+    //   [name]: value,
+    // })
+    socket.emit(name, value);
+  }
+
+
+
+
+
 }
 
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////
+//  REDUX CONNECTION
+///////////////////////////////////////////////////////////////////////
 
 
 // function mapStateToProps(state) {

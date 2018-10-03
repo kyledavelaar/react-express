@@ -61,11 +61,21 @@ app.use(function (req, res, next) {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
+  // socket.join('main');
+  // io.to('main').emit('joining main room');
+
   socket.on('user', (message) => {
     console.log('SOCKET MESSAGE:', message);
 
-    io.sockets.emit('user', message);
-    // socket.broadcast.emit('for all')
+    io.emit('user', message);
+  })
+
+  socket.on('room', room => {
+    io.emit('room', room);
+  })
+
+  socket.on('message', message => {
+    io.emit('message', message);
   })
 
 
@@ -90,8 +100,8 @@ app.use('/user', user);
 //////////////////////////////////////////////////////////////////////
 // SERVER
 //////////////////////////////////////////////////////////////////////
-const port = 8000;
+const port = process.env.PORT || 8000;
 
-http.listen(process.env.PORT || port, () => {
+http.listen(port, () => {
   console.log('Listening on ', port);
 })
