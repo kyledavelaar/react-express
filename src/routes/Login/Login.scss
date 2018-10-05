@@ -1,0 +1,18 @@
+@import '../../../variables.scss';
+
+
+$primary: deepskyblue;
+
+
+#wrapper {
+  /* background: $primary; */
+}
+
+.color {
+  color: $primary;
+  background: $lightblue;
+}
+
+.color:hover {
+  @extend %hover;
+}

@@ -15,3 +15,13 @@ THREE
 
 FOUR
   npm start
+
+
+
+
+
+## TODO
+
+  -start user on login page
+  -lock out other routes
+  -add create user form

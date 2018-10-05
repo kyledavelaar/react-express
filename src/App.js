@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import Header from './components/Header/Header';
 import NotFound from './routes/NotFound/NotFound';
 import Home from './routes/Home/Home';
+import Login from './routes/Login/Login';
 import Gallery from './routes/Gallery/Gallery';
 
 import s from './App.scss';
@@ -23,6 +24,7 @@ class App extends React.PureComponent {
             <div id={s.main} >
               <Switch>
                 <Route exact={true} path="/" component={Home} />
+                <Route path="/Login" component={Login} />
                 <Route path="/Gallery" component={Gallery} />
                 <Route component={NotFound} />
               </Switch>
