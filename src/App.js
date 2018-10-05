@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect, withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import { getFields } from './redux/fields/reducer';
 // import { getLists } from './redux/lists/reducer';
@@ -12,6 +12,15 @@ import Gallery from './routes/Gallery/Gallery';
 
 import s from './App.scss';
 
+const isAuthenticated = true;
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    isAuthenticated === true
+      ? <Component {...props} />
+      : <Redirect to='/Login' />
+  )} />
+)
 
 class App extends React.PureComponent {
   render() {
@@ -23,9 +32,11 @@ class App extends React.PureComponent {
             />
             <div id={s.main} >
               <Switch>
-                <Route exact={true} path="/" component={Home} />
-                <Route path="/Login" component={Login} />
-                <Route path="/Gallery" component={Gallery} />
+                <Route exact={true} path="/" component={Login} />
+                <PrivateRoute path='/Home' component={Home} />
+                <PrivateRoute path="/Gallery" component={Gallery} />
+                {/* <Route exact={true} path="/" component={Home} /> */}
+                {/* <Route path="/Gallery" component={Gallery} /> */}
                 <Route component={NotFound} />
               </Switch>
             </div>
