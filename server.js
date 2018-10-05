@@ -5,8 +5,8 @@ const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const user = require('./server/user/routes');
-
+const userController = require('./server/user/controller');
+const authController = require('./server/auth/controller');
 
 
 //////////////////////////////////////////////////////////////////////
@@ -44,8 +44,8 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(function (req, res, next) {
-  // res.setHeader(`Access-Control-Allow-Origin`, `http://localhost:3000`);
-  res.setHeader(`Access-Control-Allow-Origin`, `*`);
+  res.setHeader(`Access-Control-Allow-Origin`, `http://localhost:3000`);
+  // res.setHeader(`Access-Control-Allow-Origin`, `*`);
   res.setHeader(`Access-Control-Allow-Credentials`, `true`);
   res.setHeader(`Access-Control-Allow-Methods`, `GET,HEAD,OPTIONS,POST,PUT,DELETE`);
   res.setHeader(`Access-Control-Allow-Headers`, `Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers`);
@@ -91,7 +91,8 @@ io.on('connection', (socket) => {
 //////////////////////////////////////////////////////////////////////
 // ROUTES
 //////////////////////////////////////////////////////////////////////
-app.use('/user', user);
+app.use('/auth', authController);
+app.use('/user', userController);
 
 
 
