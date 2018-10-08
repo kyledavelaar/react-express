@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect, withRouter, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import { getFields } from './redux/fields/reducer';
 // import { getLists } from './redux/lists/reducer';
@@ -12,31 +12,44 @@ import Gallery from './routes/Gallery/Gallery';
 
 import s from './App.scss';
 
-const isAuthenticated = true;
+type Props = {
+  user: {isAuthenticated: string},
+}
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    isAuthenticated === true
-      ? <Component {...props} />
-      : <Redirect to='/Login' />
-  )} />
-)
+type State = {
+  links: string[]
+}
 
-class App extends React.PureComponent {
+
+
+class App extends React.PureComponent<Props, State> {
+  state = {
+    links: ['Home', 'Gallery'],
+  }
+
   render() {
+    const { user } = this.props;
+    const { links } = this.state;
+
+    const PrivateRoute = ({ component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        user.isAuthenticated === true
+          ? <Component {...props} />
+          : <Redirect to='/login' />
+      )} />
+    )
+
     return (
         <Router>
           <div data-theme="light" id={s.app}>
             <Header 
-              links={['Home', 'Gallery']}
+              links={links}
             />
             <div id={s.main} >
               <Switch>
-                <Route exact={true} path="/" component={Login} />
-                <PrivateRoute path='/Home' component={Home} />
-                <PrivateRoute path="/Gallery" component={Gallery} />
-                {/* <Route exact={true} path="/" component={Home} /> */}
-                {/* <Route path="/Gallery" component={Gallery} /> */}
+                <Route path="/login" component={Login} />
+                <PrivateRoute exact={true} path='/' component={Home} />
+                <PrivateRoute path="/gallery" component={Gallery} />
                 <Route component={NotFound} />
               </Switch>
             </div>
@@ -51,14 +64,39 @@ class App extends React.PureComponent {
     // this.props.getLists();
   }
 
+  ///////////////////////////////////////////////////////////////////////
+  //  RENDER METHODS
+  ///////////////////////////////////////////////////////////////////////
+  
+  
+  ///////////////////////////////////////////////////////////////////////
+  //  UTIL METHODS
+  ///////////////////////////////////////////////////////////////////////
+  
+  
+  ///////////////////////////////////////////////////////////////////////
+  //  EVENT HANDLERS
+  ///////////////////////////////////////////////////////////////////////
 
 }
 
 
 
+///////////////////////////////////////////////////////////////////////
+//  REDUX CONNECTION
+///////////////////////////////////////////////////////////////////////
+
+function mapStateToProps(state) {
+  const { user } = state;
+  return {
+    user: user.user,
+  }
+}
+
+
 
 export default connect(
-  null, 
+  mapStateToProps, 
   // {getFields, getLists}
   null
 )(App);
