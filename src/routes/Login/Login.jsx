@@ -1,15 +1,18 @@
 // @flow
 
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
+import { updateUser } from '../../redux/user/reducer';
 import Input from '../../components/Input/Input';
 
 import s from './Login.scss';
 
 type Props = {
-
+  updateUser: ({isAuthenticated: boolean}) => void,
+  user: {isAuthenticated: string},
 }
 
 type State = {
@@ -17,6 +20,8 @@ type State = {
   password: string,
   errorMessage: string,
 }
+
+
 
 export class Login extends React.PureComponent<Props, State> {
   state = {
@@ -27,6 +32,8 @@ export class Login extends React.PureComponent<Props, State> {
 
   render() {
     const { username, password, errorMessage } = this.state;
+    const { user } = this.props;
+
     return (
       <div id={s.wrapper}>
         <h1>Login Page</h1>
@@ -50,7 +57,7 @@ export class Login extends React.PureComponent<Props, State> {
             onChange={e => this.onInputChange(e)}
           />
           <button 
-            onClick={() => this.onSubmit(this.state)}
+            onClick={() => this.onSubmit()}
           >
             Submit
           </button>
@@ -60,6 +67,10 @@ export class Login extends React.PureComponent<Props, State> {
           <div>
             <h3>{errorMessage}</h3>
           </div>
+        }
+        {
+          user.isAuthenticated && 
+          <Redirect to='/' />
         }
       </div>
     )
@@ -91,8 +102,10 @@ export class Login extends React.PureComponent<Props, State> {
     })
   }
 
-  onSubmit(state: State) {
+  onSubmit() {
     const { username, password } = this.state;
+    const { updateUser } = this.props;
+
     if (username === '' || password === '') {
       this.setState({
         errorMessage: 'You must have a username and password.'
@@ -102,10 +115,11 @@ export class Login extends React.PureComponent<Props, State> {
     const body = {username, password};
     axios.post('/auth/login', body)
       .then(res => {
-        console.log('login', res)
         if (res.data.auth) {
+          // console.log('login', res)
           const token = res.data.token;
           sessionStorage.setItem('x-access-token', token);
+          updateUser({isAuthenticated: true});
         }
       })
       .catch(err => {
@@ -127,15 +141,15 @@ export class Login extends React.PureComponent<Props, State> {
 ///////////////////////////////////////////////////////////////////////
 
 
-// function mapStateToProps(state) {
-//   // console.log('state', state.form.ProgramForm)
-//   return {
-//     account: state.account.data
-//   }
-// }
+function mapStateToProps(state) {
+  const { user } = state;
+  return {
+    user: user.user
+  }
+}
 
 
 export default connect(
-  null,
-  null,
+  mapStateToProps,
+  {updateUser},
 )(Login);

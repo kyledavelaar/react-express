@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
+// import axios from 'axios';
 import Socket from 'socket.io-client';
 
 import Input from '../../components/Input/Input';
