@@ -5,6 +5,7 @@ var bcrypt = require('bcryptjs');
 
 const config = require('../../config');
 const User = require('../user/schema');
+const VerifyToken = require('./verifyToken');
 
 
 
@@ -33,32 +34,22 @@ router.post('/login', (req, res) => {
 
 
 
-router.get('/me', (req, res) => {
-  var token = req.headers['x-access-token'];
-  if (!token) {
-    const data = { auth: false, message: 'No token provided.' }
-    return res.status(401).send(data);
-  } 
-  
-  jwt.verify(token, config.secret, (err, decoded) => {
-    if (err) {
-      const data = { auth: false, message: 'Failed to authenticate token.' }
-      return res.status(500).send(data);
-    } 
+router.get('/me', VerifyToken, (req, res) => {
     
-    // {password: 0} is a projection so password doesn't get sent in res
-    User.findById(decoded.id, {password: 0}, (err, user) => {
-      if (err) {
-        const message = 'There was a problem finding the user.';
-        return res.status(500).send(message);
-      }
-      if (!user) {
-        return res.status(404).send('No user found.');
-      }
-      res.status(200).send(user);
-    });
+  // {password: 0} is a projection so password doesn't get sent in res
+  User.findById(req.userId, {password: 0}, (err, user) => {
+    if (err) {
+      const message = 'There was a problem finding the user.';
+      return res.status(500).send(message);
+    }
+    if (!user) {
+      return res.status(404).send('No user found.');
+    }
+    res.status(200).send(user);
   });
+
 });
+
 
 
 router.post('/register', function(req, res) {
