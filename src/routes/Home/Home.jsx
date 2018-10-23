@@ -19,8 +19,9 @@ type State = {
   numberOfUsers: number,
 }
 
+const token = sessionStorage.getItem('x-access-token');
 const serverIP = 'http://localhost:8000';
-const socket = Socket(serverIP);
+const socket = Socket(serverIP, {query: {token}});
 
 
 export class Home extends React.PureComponent<Props, State> {
@@ -67,13 +68,13 @@ export class Home extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     let { numberOfUsers } = this.state;
-    socket.emit('user', 'user logged on');
-
-    socket.on('user', (res) => {
+    
+    socket.on('user', (numberOfUsers) => {
       this.setState({
-        numberOfUsers: numberOfUsers += 1,
+        numberOfUsers,
       })
     })
+    socket.emit('user', numberOfUsers += 1);
 
     socket.on('message', message => {
       this.setState({
