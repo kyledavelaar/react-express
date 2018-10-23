@@ -78,10 +78,8 @@ io.use(function(socket, next){
   // socket.join('main');
   // io.to('main').emit('joining main room');
 
-  socket.on('user', (message) => {
-    console.log('SOCKET MESSAGE:', message);
-
-    io.emit('user', message);
+  socket.on('user', (numberOfUsers) => {
+    io.emit('user', numberOfUsers);
   })
 
   socket.on('room', room => {
