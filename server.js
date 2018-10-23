@@ -5,8 +5,11 @@ const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+
 const userController = require('./server/user/controller');
 const authController = require('./server/auth/controller');
+const config = require('./config');
 
 
 //////////////////////////////////////////////////////////////////////
@@ -58,7 +61,18 @@ app.use(function (req, res, next) {
 //////////////////////////////////////////////////////////////////////
 // SOCKETS
 //////////////////////////////////////////////////////////////////////
-io.on('connection', (socket) => {
+io.use(function(socket, next){
+  if (socket.handshake.query && socket.handshake.query.token){
+    jwt.verify(socket.handshake.query.token, config.secret, (err, decoded) => {
+      if (err) return next(new Error('Authentication error'));
+      socket.decoded = decoded;
+      next();
+    });
+  } else {
+      next(new Error('Authentication error'));
+  }    
+})
+.on('connection', (socket) => {
   console.log('a user connected');
 
   // socket.join('main');

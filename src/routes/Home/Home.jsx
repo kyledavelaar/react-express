@@ -19,8 +19,9 @@ type State = {
   numberOfUsers: number,
 }
 
+const token = sessionStorage.getItem('x-access-token');
 const serverIP = 'http://localhost:8000';
-const socket = Socket(serverIP);
+const socket = Socket(serverIP, {query: {token}});
 
 
 export class Home extends React.PureComponent<Props, State> {
