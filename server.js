@@ -61,8 +61,8 @@ app.use(function (req, res, next) {
 //////////////////////////////////////////////////////////////////////
 // SOCKETS
 //////////////////////////////////////////////////////////////////////
-io.use(function(socket, next){
-  if (socket.handshake.query && socket.handshake.query.token){
+io.use((socket, next) => {
+  if (socket.handshake.query && socket.handshake.query.token) {
     jwt.verify(socket.handshake.query.token, config.secret, (err, decoded) => {
       if (err) return next(new Error('Authentication error'));
       socket.decoded = decoded;
@@ -75,8 +75,8 @@ io.use(function(socket, next){
 .on('connection', (socket) => {
   console.log('a user connected');
 
-  // socket.join('main');
-  // io.to('main').emit('joining main room');
+  socket.join('home');
+  io.to('home').emit('userJoining', 'message');
 
   socket.on('user', (numberOfUsers) => {
     io.emit('user', numberOfUsers);
