@@ -68,6 +68,10 @@ export class Home extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     let { numberOfUsers } = this.state;
+
+    socket.on('connect', () => {
+      socket.emit('user')
+    })
     
     socket.on('user', (numberOfUsers) => {
       this.setState({
